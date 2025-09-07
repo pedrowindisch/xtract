@@ -1,0 +1,20 @@
+scrape profiles {
+  get "/users"
+  parse html {
+    select ".user" as user {
+      name:   text(".name")
+      email:  optional text(".email")
+      avatar: optional attr("img", "src")
+    }
+  }
+  output json "users.json"
+  
+  parse html {
+    select ".user" as user {
+      name:   text(".name")
+      email:  optional text(".email")
+      avatar: optional attr("img", "src")
+    }
+  }
+  output json "users.json"
+}
