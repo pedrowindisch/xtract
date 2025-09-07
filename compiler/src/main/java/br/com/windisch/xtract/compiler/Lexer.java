@@ -53,21 +53,52 @@ public class Lexer {
                 case ':':
                     addToken(TokenType.COLON);
                     break;
+                case '/':
+                    char ch = advance();
+
+                    if (ch != '/' && ch != '*') {
+                        throw new LexerException(new Position(line, column), "Unexpected character: " + ch);
+                    }
+
+                    if (ch == '/' ) {
+                        while (!isAtEnd() && source.charAt(current) != '\n')
+                            advance();
+                    } else if (ch == '*') {
+                        boolean foundEnd = false;
+                        while (!isAtEnd()) {
+                            if (source.charAt(current) == '*' && current + 1 < source.length() && source.charAt(current + 1) == '/') {
+                                foundEnd = true;
+                                advance(); // consume '*'
+                                advance(); // consume '/'
+                                break;
+                            } else {
+                                if (source.charAt(current) == '\n') {
+                                    line++;
+                                    column = 1;
+                                }
+                                advance();
+                            }
+                        }
+
+                        if (!foundEnd)
+                            throw new LexerException(new Position(line, column), "Unterminated multi-line comment.");
+                    }
+
+                    break;
                 case '"':
                     StringBuilder value = new StringBuilder();
+                    currentChar = advance();
     
-                    while (!isAtEnd() && source.charAt(current) != '"') {
+                    while (!isAtEnd() && currentChar != '"') {
                         if (source.charAt(current) == '\n')
                             // I chose not to support multi-line strings for now
                             throw new LexerException(new Position(line, column), "Multiline strings are not supported.");
     
                         value.append(currentChar);
-                        advance();
+                        currentChar = advance();
                     }
     
-                    if (isAtEnd()) throw new LexerException(new Position(line, column), "Unterminated string.");
-    
-                    advance(); // closing quote
+                    if (isAtEnd() && currentChar != '"') throw new LexerException(new Position(line, column), "Unterminated string.");
     
                     addToken(TokenType.STRING, value.toString());
                     break;
