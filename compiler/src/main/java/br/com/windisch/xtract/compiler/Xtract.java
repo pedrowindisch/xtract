@@ -5,6 +5,9 @@ import java.nio.file.Files;
 import java.nio.file.Paths;
 import java.util.List;
 
+import br.com.windisch.xtract.compiler.formatters.LexerExceptionFormatter;
+import br.com.windisch.xtract.compiler.formatters.ParserExceptionFormatter;
+import br.com.windisch.xtract.compiler.models.LexerException;
 import br.com.windisch.xtract.compiler.models.ParserException;
 import br.com.windisch.xtract.compiler.models.Token;
 
@@ -13,6 +16,7 @@ public class Xtract
     public static void main( String[] args )
     {
         List<Token> tokens = null;
+        String content = null;
 
         if (args.length != 1) System.out.println("Usage: xtract <source-file>");
         else {
@@ -23,7 +27,6 @@ public class Xtract
                 return;
             }
 
-            String content = null;
             try {
                 content = Files.readString(Paths.get(sourceFile));
             } catch (IOException e) {
@@ -35,6 +38,10 @@ public class Xtract
             try {
                 tokens = lexer.run();
                 // tokens.forEach(System.out::println);
+            } catch (LexerException e) {
+                var formatter = new LexerExceptionFormatter(content, e);
+                System.out.println(formatter.format());
+                return;
             } catch (Exception e) {
                 System.err.println(e.getMessage());
             }
@@ -45,9 +52,13 @@ public class Xtract
             var program = parser.parse();
 
             System.out.println(program.getBase().getUrl());
+            var firstScrape = program.getScrapes().get(0);
+            var firstParse = firstScrape.getParsers().get(0);
+            System.out.println(firstScrape.getName());
+            System.out.println(firstScrape.getUrl());
         } catch (ParserException e) {
-            // TODO Auto-generated catch block
-            e.printStackTrace();
+            var formatter = new ParserExceptionFormatter(content, e);
+            System.out.println(formatter.format());
         }
     }
 }

@@ -16,6 +16,8 @@ public class Lexer {
     private int current = 0;
 
     private int line = 1;
+
+    private int currentTokenStartColumn = 1;
     private int column = 1;
 
     public Lexer(String source) {
@@ -24,7 +26,9 @@ public class Lexer {
     
     public List<Token> run() throws LexerException {
         while (!isAtEnd()) {
+            currentTokenStartColumn = column;
             char currentChar = advance();
+
             switch (currentChar) {
                 case ' ':
                 case '\r':
@@ -174,11 +178,11 @@ public class Lexer {
     }
 
     private void addToken(TokenType type) {
-        tokens.add(new Token(type, source.substring(start, current), new Position(line, column)));
+        tokens.add(new Token(type, source.substring(start, current), new Position(line, currentTokenStartColumn)));
     }
 
     private void addToken(TokenType type, String lexeme) {
-        tokens.add(new Token(type, lexeme, new Position(line, column)));
+        tokens.add(new Token(type, lexeme, new Position(line, currentTokenStartColumn)));
     }
 
     private char advance() {
