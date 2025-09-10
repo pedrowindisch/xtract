@@ -6,7 +6,7 @@ scrape profiles {
     select ".user" as user {
       name:   text(".name")
       email:  optional text(".email")
-      avatar: optional attr("img", "src")
+      avatar: optional attr("img")
     }
   }
   output json "users.json"
@@ -15,7 +15,7 @@ scrape profiles {
     select ".user" as user {
       name:   text(".name")
       email:  optional text(".email")
-      avatar: optional attr("img", "src")
+      avatar: optional attr("img")
     }
   }
   output json "users.json"
