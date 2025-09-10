@@ -1,3 +1,5 @@
+base "example.com"
+
 scrape profiles {
   get "/users"
   parse html {
