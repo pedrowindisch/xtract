@@ -2,7 +2,7 @@ package br.com.windisch.xtract.compiler.nodes;
 
 import br.com.windisch.xtract.compiler.models.ExtractionMethodType;
 
-public class SelectField extends Node {
+public final class SelectField implements Node {
     private String field;
     private boolean isOptional;
     private ExtractionMethodType extractionMethodType;

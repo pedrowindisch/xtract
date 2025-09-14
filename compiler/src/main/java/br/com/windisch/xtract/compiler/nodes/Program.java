@@ -2,7 +2,7 @@ package br.com.windisch.xtract.compiler.nodes;
 
 import java.util.List;
 
-public class Program extends Node {
+public final class Program implements Node {
     private Base base;
     private List<Scrape> scrapes;
 

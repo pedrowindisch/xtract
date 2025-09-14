@@ -21,11 +21,17 @@
       <version>5.10.0</version>
       <scope>test</scope>
     </dependency>
+
+    <dependency>
+      <groupId>com.palantir.javapoet</groupId>
+      <artifactId>javapoet</artifactId>
+      <version>0.7.0</version>
+    </dependency>
   </dependencies>
   
   <properties>
-    <maven.compiler.source>17</maven.compiler.source>
-    <maven.compiler.target>17</maven.compiler.target>
+    <maven.compiler.source>21</maven.compiler.source>
+    <maven.compiler.target>21</maven.compiler.target>
   </properties>
 
   <build>

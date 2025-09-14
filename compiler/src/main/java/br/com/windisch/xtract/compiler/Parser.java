@@ -18,8 +18,6 @@ import br.com.windisch.xtract.compiler.nodes.Scrape;
 import br.com.windisch.xtract.compiler.nodes.SelectField;
 
 public class Parser {
-    // recursive descent parser
-
     private final List<Token> tokens;
     private int current = 0;
 
@@ -133,7 +131,7 @@ public class Parser {
         consume(TokenType.RBRACE, "Expected '}' after parser body.");
 
         Output output = null;
-        if (check(TokenType.OUTPUT)) parseOutput();
+        if (check(TokenType.OUTPUT)) output = parseOutput();
 
         return new br.com.windisch.xtract.compiler.nodes.Parser(DocumentType.HTML, body, output);
     }

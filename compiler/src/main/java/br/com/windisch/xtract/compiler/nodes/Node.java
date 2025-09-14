@@ -1,5 +1,6 @@
 package br.com.windisch.xtract.compiler.nodes;
 
-public abstract class Node {
+public sealed interface Node
+    permits Base, Output, ParseBody, Parser, Program, Scrape, SelectField {
     
 }

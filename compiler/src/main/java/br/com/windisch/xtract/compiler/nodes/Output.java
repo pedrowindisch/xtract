@@ -2,7 +2,7 @@ package br.com.windisch.xtract.compiler.nodes;
 
 import br.com.windisch.xtract.compiler.models.OutputType;
 
-public class Output extends Node {
+public final class Output implements Node {
     private boolean append;
     private OutputType outputType;
     private String fileName;

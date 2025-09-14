@@ -1,6 +1,6 @@
 package br.com.windisch.xtract.compiler.nodes;
 
-public class Base extends Node {
+public final class Base implements Node {
     private String url;
 
     public Base(String url) {

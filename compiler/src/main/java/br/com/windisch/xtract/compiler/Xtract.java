@@ -10,6 +10,8 @@ import br.com.windisch.xtract.compiler.formatters.ParserExceptionFormatter;
 import br.com.windisch.xtract.compiler.models.LexerException;
 import br.com.windisch.xtract.compiler.models.ParserException;
 import br.com.windisch.xtract.compiler.models.Token;
+import br.com.windisch.xtract.compiler.nodes.Program;
+import br.com.windisch.xtract.compiler.nodes.SelectField;
 
 public class Xtract
 {
@@ -44,21 +46,21 @@ public class Xtract
                 return;
             } catch (Exception e) {
                 System.err.println(e.getMessage());
+                return;
             }
         }
 
         var parser = new Parser(tokens);
+        Program program = null;
         try {
-            var program = parser.parse();
-
-            System.out.println(program.getBase().getUrl());
-            var firstScrape = program.getScrapes().get(0);
-            var firstParse = firstScrape.getParsers().get(0);
-            System.out.println(firstScrape.getName());
-            System.out.println(firstScrape.getUrl());
+            program = parser.parse();
         } catch (ParserException e) {
             var formatter = new ParserExceptionFormatter(content, e);
             System.out.println(formatter.format());
+            return;
         }
+
+        CodeGenerator generator = new CodeGenerator(program);
+        System.out.println(generator.generate());
     }
 }

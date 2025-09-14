@@ -2,7 +2,7 @@ package br.com.windisch.xtract.compiler.nodes;
 
 import java.util.List;
 
-public class ParseBody extends Node {
+public final class ParseBody implements Node {
     private String selector;
     private String field;
 

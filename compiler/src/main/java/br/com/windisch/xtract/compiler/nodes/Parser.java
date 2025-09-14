@@ -2,7 +2,7 @@ package br.com.windisch.xtract.compiler.nodes;
 
 import br.com.windisch.xtract.compiler.models.DocumentType;
 
-public class Parser extends Node {
+public final class Parser implements Node {
     private DocumentType documentType;
     private ParseBody parseBody;
     private Output output;

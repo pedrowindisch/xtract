@@ -4,7 +4,7 @@ import java.util.List;
 
 import br.com.windisch.xtract.compiler.models.Method;
 
-public class Scrape extends Node {
+public final class Scrape implements Node {
     private String name;
     private Method method;
     private String url;
