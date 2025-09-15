@@ -11,6 +11,7 @@ import com.palantir.javapoet.MethodSpec;
 import com.palantir.javapoet.TypeSpec;
 
 import br.com.windisch.xtract.compiler.models.DocumentType;
+import br.com.windisch.xtract.compiler.models.ExtractionMethodType;
 import br.com.windisch.xtract.compiler.nodes.Base;
 import br.com.windisch.xtract.compiler.nodes.Node;
 import br.com.windisch.xtract.compiler.nodes.Output;
@@ -22,6 +23,7 @@ import br.com.windisch.xtract.compiler.nodes.SelectField;
 
 public class CodeGenerator {
     private final Program program;
+    private int currentFieldIndex = 0;
 
     public CodeGenerator(Program program) {
         this.program = program;
@@ -29,7 +31,9 @@ public class CodeGenerator {
 
     public String generate() {
         TypeSpec generatedClass = (TypeSpec) generate(program);
-        JavaFile javaFile = JavaFile.builder("br.com.windisch.xtract.generated", generatedClass).build();
+        JavaFile javaFile = JavaFile.builder("br.com.windisch.xtract.generated", generatedClass)
+            // .addStaticImport("br.com.windisch.xtract.runtime.HtmlHandler")
+            .build();
 
         return javaFile.toString();
     }
@@ -59,16 +63,11 @@ public class CodeGenerator {
             .methodBuilder("main")
             .addModifiers(Modifier.PUBLIC, Modifier.STATIC)
             .returns(void.class)
-            .addParameter(String[].class, "args")
-            .addStatement(
-                CodeBlock.builder()
-                    .add("// Entry point\n")
-                    .build()
-            );
+            .addParameter(String[].class, "args");
 
-        // for (Scrape scrape : program.getScrapes()) mainMethod.addStatement("$N()", scrape.getName());
+        for (Scrape scrape : program.getScrapes()) mainMethod.addStatement("$N()", scrape.getName());
 
-        // builder.addMethod(mainMethod.build());
+        builder.addMethod(mainMethod.build());
 
         return builder.build();
     }
@@ -84,10 +83,18 @@ public class CodeGenerator {
     
 
     private MethodSpec generateScrape(Scrape scrape) {
+        currentFieldIndex = 0;
+
         var method = MethodSpec
             .methodBuilder(scrape.getName())
             .addModifiers(Modifier.PUBLIC, Modifier.STATIC)
             .returns(void.class);
+
+        method.addCode("var url = BASE_URL + $S;\n", scrape.getUrl());
+        method.addCode("var parser = HtmlHandler.get(url);\n \n");
+
+        method.addCode("Element element = null;\n");
+        method.addCode("Element helper = null;\n\n");
 
         for (Parser parser : scrape.getParsers()) method.addCode((CodeBlock) generate(parser));
 
@@ -98,8 +105,6 @@ public class CodeGenerator {
         var builder = CodeBlock.builder();
 
         if (parser.getDocumentType() == DocumentType.HTML) {
-            builder.add("// HTML parsing \n");
-
             var body = parser.getParseBody();
             builder.add((CodeBlock) generate(body));
 
@@ -111,10 +116,20 @@ public class CodeGenerator {
 
     private CodeBlock generateParseBody(ParseBody body) {
         var builder = CodeBlock.builder()
-            .add("// select " + body.getSelector() + "\n");
+            // .add("// select " + body.getSelector() + "\n");
+            .add("element = HtmlHandler.findElement(element, $S);\n", body.getSelector());
 
         for (SelectField field : body.getSelectFields()) {
-            builder.add((CodeBlock) generate(field));
+            currentFieldIndex++;
+
+            builder.add("helperElement = HtmlHandler.findElement(element, $S);\n", field.getAttributeName());
+            if (field.getExtractionMethodType() == ExtractionMethodType.TEXT) {
+                builder.add("var v" + currentFieldIndex + " = HtmlHandler.getText(helperElement);\n");
+            } else if (field.getExtractionMethodType() == ExtractionMethodType.ATTR) {
+                builder.add("var v" + currentFieldIndex + " = HtmlHandler.getHtml(helperElement);\n");
+            } else {
+                builder.add("// unsupported extraction method " + field.getExtractionMethodType() + "\n");
+            }
         }
 
         return builder.build();

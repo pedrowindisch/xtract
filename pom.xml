@@ -10,7 +10,7 @@
   <packaging>pom</packaging>
 
   <modules>
-    <!-- <module>runtime</module> -->
+    <module>runtime</module>
     <module>compiler</module>
   </modules>
 
