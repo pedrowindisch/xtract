@@ -7,6 +7,7 @@ import java.util.List;
 
 import br.com.windisch.xtract.compiler.formatters.LexerExceptionFormatter;
 import br.com.windisch.xtract.compiler.formatters.ParserExceptionFormatter;
+import br.com.windisch.xtract.compiler.models.InterpreterException;
 import br.com.windisch.xtract.compiler.models.LexerException;
 import br.com.windisch.xtract.compiler.models.ParserException;
 import br.com.windisch.xtract.compiler.models.Token;
@@ -15,8 +16,7 @@ import br.com.windisch.xtract.compiler.nodes.SelectField;
 
 public class Xtract
 {
-    public static void main( String[] args )
-    {
+    public static void main( String[] args ) throws InterpreterException {
         List<Token> tokens = null;
         String content = null;
 
@@ -60,7 +60,10 @@ public class Xtract
             return;
         }
 
-        CodeGenerator generator = new CodeGenerator(program);
-        System.out.println(generator.generate());
+        // CodeGenerator generator = new CodeGenerator(program);
+        // System.out.println(generator.generate());
+
+        Interpreter interpreter = new Interpreter();
+        interpreter.eval(program);
     }
 }

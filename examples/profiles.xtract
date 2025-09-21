@@ -3,8 +3,8 @@ base "example.com"
 scrape profiles {
   get "/users"
   parse html {
-    select ".user" as user {
-      name:   text(".name")
+    select "h1" as user {
+      name:   text()
       email:  optional text(".email")
       avatar: optional attr("img")
     }
@@ -13,7 +13,7 @@ scrape profiles {
   
   parse html {
     select ".user" as user {
-      name:   text(".name")
+      name:   text()
       email:  optional text(".email")
       avatar: optional attr("img")
     }
