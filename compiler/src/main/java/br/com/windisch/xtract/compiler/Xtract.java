@@ -14,6 +14,7 @@ import br.com.windisch.xtract.compiler.models.Token;
 import br.com.windisch.xtract.compiler.models.XtractCompilerException;
 import br.com.windisch.xtract.compiler.nodes.Program;
 import br.com.windisch.xtract.compiler.nodes.SelectField;
+import br.com.windisch.xtract.compiler.utils.ScrapeContextOutputter;
 
 public class Xtract
 {
@@ -66,5 +67,7 @@ public class Xtract
 
         Interpreter interpreter = new Interpreter();
         interpreter.eval(program);
+
+        for (var context : interpreter.getScrapeContexts()) ScrapeContextOutputter.output(context);
     }
 }

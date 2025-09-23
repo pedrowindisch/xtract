@@ -44,6 +44,10 @@ public class Interpreter {
         if (program.getBase() != null) evalBase(program.getBase());
         for (Scrape scrape : program.getScrapes()) evalScrape(scrape);
     }
+
+    public List<ScrapeContext> getScrapeContexts() {
+        return scrapeContexts;
+    }
     
     public void evalBase(Base base) {
         this.baseUrl = base.getUrl();
